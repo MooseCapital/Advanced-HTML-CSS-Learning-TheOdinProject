@@ -48,11 +48,12 @@ background-color: rgb(67,76,94, 0.7);
 cursor: pointer;
 }
 #root {
+background-color: aliceblue;
 }
 .App {
 display: flex;
 flex-direction: column;
-
+padding: 20px 10px;
 }
 
 .App.dark-mode {
@@ -64,6 +65,151 @@ color: rgb(236, 239, 244);
 color: #2e3440;
 background-color: aliceblue;
 }
+
+/*
+transform 2d & 3d: https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-transforms
+    -> rotate, scale, skew, and translate.
+    rotate - usually use degrees, or
+    scale - stretch on x, y plane or both at same time.
+    skew - skew on x, y or both
+    translate - move element x,y or both. using pixels or % or elements width/height
+
+
+*/
+.square {
+background-color: aqua;
+min-height: 100px;
+width: 100px;
+margin: 5px 0;
+border: 1px solid black;
+}
+.square-1 {
+transform: rotate(45deg);
+}
+.square-2 {
+transform: scaley(0.5);
+}
+.square-3 {
+transform: skewX(20deg);
+}
+.square-4 {
+transform: translatex(50px);
+}
+/*
+    we can chain multiple transforms on one
+
+*/
+.square-5 {
+transform: skewX(20deg) translateX(100px);
+}
+/*
+3d transforms - rotate, scale and translate aren't limited to 2d  https://css-tricks.com/how-css-perspective-works/
+    to perceive a 3D effect on some of these function values, perspective is required.
+
+https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-transitions
+Transitions - let you animate a change from an element’s initial state to an end state
+    transition property, which is actually a shorthand property for transition-property, transition-duration,
+    transition-timing-function and transition-delay.
+
+    we can trigger transition on :hover or any pseudo-classes, we can also
+    transition by adding or removing a class with js
+
+    Performance - we should only affect opacity and transform to get best performance
+        -> changing background-color was expensive operation for us.
+
+*/
+.square-6 {
+transition: background-color 1s, rotate 2s ;
+}
+.square-6:hover {
+rotate: 90deg;
+background-color: mediumspringgreen;
+}
+/*
+ css animations using keyframes
+    -> transitions were designed to animate an element one state to another. they can loop but weren't
+        ->designed for that, they need a trigger like :hover or :focus
+
+    ->Animations were designed for explicitly enabling loops, they don't need a trigger
+
+    #ball {
+      animation-duration: 2s;
+      animation-name: change-color;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+    animation-duration - takes 2 seconds for ball to complete animation cycle
+    animation-name: change-color; -> essential to match @keyframes, this is a CUSTOM name, it can be apples or cats
+    animation-iteration-count: infinite, means animation will run forever -> it can be 1,2.. many times to run
+    animation-direction: alternate- means should it alternate direction between cycles. to not jump straight back to original state
+
+    @keyframes change-color { ->references "change-color" animation name,can be anything custom
+      from {
+        background-color: red;
+      }
+
+      to {
+        background-color: green;
+      }
+    }
+
+    from & to -> are actually aliases for 0% to 100%.. as in from 0% 0 seconds.. to 100% 2s..
+        this is specified with our animation-duration 2s in #ball.
+
+        since our animation-iteration-count is "infinite" we don't worry about this.. but if it was "2"
+        -> changing background color from red to green is 1 iteration, then back green to red is another
+        -> so an iteration is really not a complete loop, but rather halfway
+
+    Animation shorthand   https://www.w3schools.com/cssref/css3_pr_animation.php
+        animation: 2s change-color infinite alternate;
+
+    -> be mindful from is 0%, to is 100%, and we specify all in between
+
+    -> we should remember transitions need a trigger like :hover and :focus, while animations do not
+        ->transition is just transitioning to the transform, while animation is mostly for endless loops, we can use it just like a transition!
+        ->but animation is way more customizable we simply don't set iteration count, and it runs every time our new class is added etc..
+        -> if we have display none or something, then display:block on another "visible" class we add to it later.
+        -> we want to animate, so we put it in the 'visible' class, now going from not shown to shown, we can animate every % step of the way,
+        -> we could have never done this with transition, because we don't use :hover or pseudoclasses.. we only use display: none to block
+
+    @keyframes change-color {
+  from {
+    background-color: red;
+  }
+
+  50% {
+    width: 200px;
+    height: 200px;
+    background-color: blue;
+  }
+
+  to {
+    background-color: green;
+  }
+}
+*/
+
+.square-7 {
+ /* animation: 6s move-box infinite alternate ease-in-out; */
+}
+@keyframes move-box
+{
+    0% {
+
+    }
+    100% {
+        transform: translateX(100px) ;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 
