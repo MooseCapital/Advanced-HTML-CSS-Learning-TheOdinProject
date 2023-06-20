@@ -13,7 +13,6 @@ function Home(props) {
             <div className="square-5 square">chain: skew x 20deg & translate x 100px</div>
             <p>transitions</p>
             <div className="square-6 square">bg-color and rotate 90deg on hover</div>
-            <div className="square-7 square"></div>
         </>
     )
 }
