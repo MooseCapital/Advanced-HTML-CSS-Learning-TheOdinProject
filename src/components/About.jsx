@@ -163,13 +163,132 @@ Semantic HTML for accessibility -https://www.theodinproject.com/lessons/node-pat
                     -> do NOT be redundant, such as writing words that are also in the paragraphs below it.
                     -> if the image does not convey relevant content, leave it blank
 
+    WAI-ARIA - Think of ARIA as something that fills in the accessible gaps left by native HTML.
+            -> ARIA can only modify the semantics or context of an element.
+            -> ARIA can be power but also extremely dangerous when used incorrectly. so NO ARIA is better than bad ARIA.
+
+        5 rules of ARIA:
+            1) Always use native HTML elements and attributes over ARIA when possible.
+            2) Never change native semantics, unless you have no other choice.
+            3) All interactive ARIA controls must be usable with a keyboard.
+            4) Never use role='presentation' or aria-hidden='true' on focusable elements.
+            5) All interactive elements must have an accessible name.
+
+        ARIA works by modifying properties of the objects that make up this accessibility tree.
+        For this lesson, we’re only going to focus on two of these properties:
+            Name - aka "accessible name" , assistive technology announce to the user and separate same type of elements from one another
+                ->name is set by one or more native labels, such as <label> element or alt attribute
+            Description - assistive technologies announce this in addition to accessible name
+
+        ARIA Labels - override native labels or provide additional descriptive text, unlike <label> element, ARIA labels
+            aren't limited to a few select elements, but they have their own limits.
+
+            aria-label attribute: overrides any native label and modifies the name property in the accessibility tree
+                -> does not work on every element, such as Div or span
+
+                -> a common use is a close button, the screen reader announces "close menu, button" instead of "x, button"
+                    <button type='button' aria-label='Close menu'>X</button>
+                -> tell the user this is the nav bar
+                    <nav aria-label='main navigation'>...</nav>
+
+            aria-labelledby: aria-label uses the text we write, where aria-labelledby, takes in the id of another element ON the page
+                -> then the innerText of our ID element is read out to the user as our label, similar to <label> element, but it will be read
+                -> even when the label is hidden with HTML or CSS, it seems easier to just use aria-label to not make 2 elements though..
+                -> remember in a form, a label to an input can be clicked and focus the input, aria-labbeledby does not focus for us
+                    <div id='label'>Name:</div>
+                    <input type='text' aria-labelledby='label' />
+
+            aria-describedby - similar to aria-labelledby, that is needs an ID passed it to match. it modifies the description property in accessibility tree
+                -> the element passed in through ID, can be visually hidden and simply used for description, this makes sense as a long description might want to be written elsewhere
+                    -> to make it visually easy for us
+                ->when the input is focused, the screen reader reads “Password, edit protected, password must be at least ten characters long.”
+                <label>Password:
+                  <input type='password' aria-describedby='password-requirements' />
+                </label>
+                <span id='password-requirements'>Password must be at least 10 characters long.</span>
+
+            Hiding content from accessibility Tree
+                aria-hidden - attribute, instead of visually hiding, we are ONLY hiding from accessibility tree, so these are NOT screen read
+                    -> ALL children of aria-hidden="true" will be hidden from the accessibility tree also
+                    -> do NOT hide a focusable element, on focus we want the reader to tell the user our description, this removes that!!
+                -> inside a button, we may want an image icon. well the reader announces “Add add book, button”
+                    -> to hide this, we added aria-hidden='true' , now we only hear "add book, button"
+                    -> it's important to note here, all things visually we might not want announced to the screen reader thats not important, we need to remember this
+
+                    <button type='button'>
+                      <span class='material-icons' aria-hidden='true' >add</span>
+                      Add Book
+                    </button>
+
+    Accessibility Auditing - There are built in tools like lighthouse for chrome, which we used to test performance, it also has a11y
+        there is also axe devtools extension to audit a11y.
+
+        To see accessibility, go to elemements -> click element -> accessibility tab on right
+            -> we can see element view or full page a11y tree
+
+        To use AxeDevTools a11y viewer, we click it at the top of dev tools by clicking the arrow on top by memory
+
+        We may also catch a11y problems with "issues" in devtools as well -> click the 3 dotted menu next to close x button
+            -> we see more tools -> now we get 'issues' which opens beside the console bottom section
+            -> reload the page to catch more issues, chrome may find a11y issues for us here.
+
+
 
 */
 
+
+/*
+    responsive design - we will not focus on the 'design' of the website, but focus on the responsiveness, so our website can be in different sizes and zoom levels
+        -> how we make our website work on any size screen
+        ->phones rarely get below 320px width so that's a reliable lower end target
+        -> ultra wide monitors are NOT uncommon now-a-days, we should plan for this with max-widths
+
+     Natural responsiveness -
+        Avoid fixed width and height, this is the enemy of flexibility
+            -> putting width: 600px on anything, will ensure it never goes below that width, not even on our phones tiny screen
+            -> the fix in many cases is replacing width or height with max-width or min-height
+                When a max-width is defined, the element will not exceed that width, but will shrink if the screen is too small to accommodate it.
+
+            Avoid setting heights - in most cases we should avoid setting a height to make it most flexible, exceptions are headers and footers.
+                    we should use margin and padding to keep our elements flexible no matter what the content inside does.
+
+            When fixed width is appropriate - sometimes we have icons, we probably don't want it to shrink, and always want it 16px or so
+                    likewise, a sidebar we might always want it to be 250px wide and to not shrink.
+
+            Flexbox and grid - using these don't guarantee flexible layouts, but we have flex-wrap and grid’s minmax, auto-fill that we have used before to make
+                    very impressively flexible layouts before.
+
+            Percentages in CSS - the smallest phone in use is probably the iphone 5 with 320px wide, we can simulate this in chrome
+                easily click the phone icon in devtools. we never want to use a percentage unless it is like a child element fitting to its parent. usually max-width
+                and min-height are good
+
+                Our views should not look the same on a phone screen like a desktop. Our font should be scale down to fit. Proportions
+                on a phone will look quite different, for things such as header, footer, main content.. some text will overflow, margins and paddings need adjusting
+                This is all fine.
+                        https://codyloyd.com/2021/percentages/
+                In our example gifs, if we use width: 100%, we get text overflow inside our element,If you simply remove the width rule, most html elements will
+                 expand horizontally to fill 100% of the horizontal space.
+
+                Breakpoint - when our screens width is below a certain size, we can set css just for that,
+                    Also, instead of a set width, we can use static margin and padding, and on smaller screen sizes, we set these margins smaller
+
+                    @media (max-width: 500px) {
+                          .card {
+                            padding: 16px;
+                            margin: 16px;
+                          }
+                        }
+
+
+
+
+
+*/
 function About(props) {
 
     return (
         <>
+            <div className="cube">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</div>
         </>
     )
 }
